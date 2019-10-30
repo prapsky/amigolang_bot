@@ -31,5 +31,6 @@ func main() {
   app.client = bot.Client()
   bot.HandleMessage("/start", app.startHandler)
   bot.HandleMessage("/hello", app.helloHandler)
+  bot.HandleMessage("/say .+", app.sayHandler)
   log.Fatal(bot.Start())
 }
