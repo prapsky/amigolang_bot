@@ -9,7 +9,7 @@ import (
 
 //Handle the /start command here
 func (a *application) startHandler(m *tbot.Message) {
-  msg := "Welcome to Amigolang. Use /hello to greeting."
+  msg := fmt.Sprintf("Welcome to Amigolang.\nUse /hello to get Hello.\nUse /say <your word> to say the word, for example /say hello.")
   a.client.SendMessage(m.Chat.ID, msg)
 }
 
@@ -23,7 +23,7 @@ func (a *application) helloHandler(m *tbot.Message) {
 //Handle the /say command here
 func (a *application) sayHandler(m *tbot.Message) {
 	text := strings.TrimPrefix(m.Text, "/say ")
-	word := fmt.Sprintf("```\n%s\n```", word(text))
+	word := fmt.Sprintf("The word you say is: %s", word(text))
 	a.client.SendMessage(m.Chat.ID, word)
 }
 
