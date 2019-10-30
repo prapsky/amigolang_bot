@@ -3,32 +3,33 @@ package main
 import (
   "log"
   "os"
-  tb "gopkg.in/tucnak/telebot.v2"
+
+  "github.com/joho/godotenv"
+  "github.com/yanzay/tbot/v2"
 )
 
+type application struct {
+  client *tbot.Client
+}
+
+var (
+  app application
+  bot *tbot.Server
+  token string
+)
+
+func init() {
+  e := godotenv.Load()
+  if e != nil {
+    log.Println(e)
+  }
+  token = os.Getenv("TOKEN")
+}
+
 func main() {
-  var (
-    port = os.Getenv("PORT")
-    publicURL = os.Getenv("PUBLIC_URL")
-    token = os.Getenv("TOKEN")
-  )
-
-  webhook := &tb.Webhook{
-    Listen: ":" + port,
-    Endpoint: &tb.WebhookEndpoint{PublicURL: publicURL},
-  }
-
-  pref := tb.Settings{
-    Token: token,
-    Poller: webhook,
-  }
-
-  b, err := tb.NewBot(pref)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  b.Handle("/hello", func(m *tb.Message) {
-    b.Send(m.Sender, "Hi!")
-  })
+  bot = tbot.New(token, tbot.WithWebhook("https://amigolang-bot.herokuapp.com", ":"+os.Getenv("PORT")))
+  app.client = bot.Client()
+  bot.HandleMessage("/start", app.startHandler)
+  bot.HandleMessage("/hello", app.helloHandler)
+  log.Fatal(bot.Start())
 }
